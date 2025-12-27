@@ -22,7 +22,9 @@
  <button onclick="askOllamaSOAP()">Follow up  note SOAP</button>
  <button onclick="askOllamaSubj()">New consult Subjective</button>
  <button onclick="askOllamaPlan()">New consult Assessment/Plan</button>
+ <button onclick="askOllamaPMH()">Past Medical History</button>
  <button onclick="justAsk()">Just ask a question</button>
+ <button onclick="askOllamaAN2()">Antenatal Record 2</button>
  
 <label for="endpoint">Azure OpenAI Endpoint:</label>
                 <input type="text" id="endpoint" value="https://scriber03.openai.azure.com/" placeholder="https://your-resource.openai.azure.com/" />
@@ -141,6 +143,7 @@ const url = 'http://' + ipA + ':3000/api/chat'
                     })
                 });
 
+        
 
       const data = await response.json();   
     let booboo = data.choices?.[0]?.message?.content
@@ -153,6 +156,108 @@ const url = 'http://' + ipA + ':3000/api/chat'
 
     }
 
+
+async function askOllamaPMH() {
+            const endpoint = document.getElementById('endpoint').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const deploymentName = document.getElementById('deploymentName').value.trim();
+
+      //const promptA = document.getElementById('transcription').textContent;
+      const promptA = document.getElementById('transcriptionCopy').value;
+
+      const prompt = "The following is a conversation between a doctor and patient.  Speaker diarization is not done - so you need to infer when the doctor is speaking and when the patient is speaking.  You are a medical assistant to help me write notes. Please categorize the notes in to Past Gynecologic History, Past Obstetrical History (GTPAL), Past Medical History, Past Surgical History, Medications, Allergies, Social History. Here is the dialogue: " + promptA    
+const ipA = document.getElementById('ipAddress').value
+if (ipA.length <6) {
+  document.getElementById('response').textContent = "invalid IP address";
+}                const apiVersion = "2025-01-01-preview";
+                const apiUrl = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
+
+const url = 'http://' + ipA + ':3000/api/chat'
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are an AI assistant that helps with medical documentation and scribing. Please process and format the medical notes provided, ensuring accuracy and proper medical terminology."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        max_completion_tokens: 100000
+                    })
+                });
+
+
+      const data = await response.json();   
+    let booboo = data.choices?.[0]?.message?.content
+      let startIndex = booboo.indexOf("</think>")
+      let endIndex = booboo.length
+         	  
+      let truncatedStr = booboo.substring(startIndex, endIndex)   
+      //document.getElementById('response').textContent = data.choices?.[0]?.message?.content || "No response";
+      document.getElementById('response').textContent = truncatedStr || "No response";
+
+    }
+
+
+      async function askOllamaAN2() {
+            const endpoint = document.getElementById('endpoint').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const deploymentName = document.getElementById('deploymentName').value.trim();
+
+      //const promptA = document.getElementById('transcription').textContent;
+      const promptA = document.getElementById('transcriptionCopy').value;
+
+      const prompt = "The following are notes regarding a patient's obstetrical investigations.  I am using this information to fill out her antenatal record.  Categorize them into hemoglobin - 1st value, blood type, antibody screen value, platelets - 1st value, MCV, Rubella antibody, Hepatitis B antigen, VDRL antibody, HIV antibody, gonorrhea, chlamydia, urine culture, hemoglobin -2nd value if present, antibody screen - 2nd value if present, platelets - 2nd value if present, 1 hour OGCT (oral glucose challenge test) - if present, 2 hour OGTT (oral glucose tolerance test) - if present.  In addition, I want you to categorize any ultrasounds into dating ultrasound, nuchal translucency ultrasound, anatomy ultrasound, and other. For dating ultrasound give me crown-rump length, expected gestational age, due date. For anatomy ultrasound give me the gestational age, average ultrasound age, placenta location compared to the cervix ie whether it is previa/low-lying or clear, whether the anatomy is complete or incomplete.  if incomplete, tell me which parts were incomplete. for other ultrasounds, tell me the gestational age expected, the average ultrasound age, the percentile for the growth of the fetus if available, and the presentation of the fetus - whether vertex, breech or transverse." + promptA    
+const ipA = document.getElementById('ipAddress').value
+if (ipA.length <6) {
+  document.getElementById('response').textContent = "invalid IP address";
+}                const apiVersion = "2025-01-01-preview";
+                const apiUrl = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
+
+const url = 'http://' + ipA + ':3000/api/chat'
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are an AI assistant that helps with medical documentation and scribing. Please process and format the medical notes provided, ensuring accuracy and proper medical terminology."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        max_completion_tokens: 100000
+                    })
+                });
+
+
+      const data = await response.json();   
+    let booboo = data.choices?.[0]?.message?.content
+      let startIndex = booboo.indexOf("</think>")
+      let endIndex = booboo.length
+         	  
+      let truncatedStr = booboo.substring(startIndex, endIndex)   
+      //document.getElementById('response').textContent = data.choices?.[0]?.message?.content || "No response";
+      document.getElementById('response').textContent = truncatedStr || "No response";
+
+    }
+      
 
 async function askOllamaSubj(){
 
