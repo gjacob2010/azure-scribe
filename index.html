@@ -165,7 +165,7 @@ async function askOllamaPMH() {
       //const promptA = document.getElementById('transcription').textContent;
       const promptA = document.getElementById('transcriptionCopy').value;
 
-      const prompt = "The following is a conversation between a doctor and patient.  Speaker diarization is not done - so you need to infer when the doctor is speaking and when the patient is speaking.  You are a medical assistant to help me write notes. Please categorize the notes in to Past Gynecologic History, Past Obstetrical History (GTPAL), Past Medical History, Past Surgical History, Medications, Allergies, Social History. Here is the dialogue: " + promptA    
+      const prompt = "The following is a conversation between a doctor and patient.  Speaker diarization is not done - so you need to infer when the doctor is speaking and when the patient is speaking.  You are a medical assistant to help me write notes. Please categorize the notes in to Past Gynecologic History, Past Obstetrical History (GTPAL), Investigations (ultrasound findings, MRI findings, microbiology, pathology), Past Medical History, Past Surgical History, Medications, Allergies, Social History. Here is the dialogue: " + promptA    
 const ipA = document.getElementById('ipAddress').value
 if (ipA.length <6) {
   document.getElementById('response').textContent = "invalid IP address";
