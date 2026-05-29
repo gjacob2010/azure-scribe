@@ -19,13 +19,14 @@
 <button id="startButton">Start</button>
     <button id="stopButton" onclick = "initSpeechRecognition()">Stop</button>
 <button onclick = "location.reload()">Restart</button>
- <button onclick="askOllamaSOAP()">Follow up  note SOAP</button>
+ <button onclick="askOllamaSOAP()">Follow up  note SOAP</button>    
  <button onclick="askOllamaSubj()">New consult Subjective</button>
  <button onclick="askOllamaPlan()">New consult Assessment/Plan</button>
  <button onclick="askOllamaPMH()">Past Medical History</button>
  <button onclick="justAsk()">Just ask a question</button>
  <button onclick="askOllamaAN2()">Antenatal Record 2</button>
- 
+
+<button onclick="resetResponse()">Reset</button> 
 <label for="endpoint">Azure OpenAI Endpoint:</label>
                 <input type="text" id="endpoint" value="https://scriber03.openai.azure.com/" placeholder="https://your-resource.openai.azure.com/" />
                 <small>Should NOT include /openai/v1/</small>
@@ -156,7 +157,10 @@ const url = 'http://' + ipA + ':3000/api/chat'
 
     }
 
-
+async function resetResponse(){
+    document.getElementById('response').textContent = ""
+}
+      
 async function askOllamaPMH() {
             const endpoint = document.getElementById('endpoint').value.trim();
             const apiKey = document.getElementById('apiKey').value.trim();
