@@ -373,24 +373,30 @@ const url = 'http://' + ipA + ':3000/api/chat'
         let recognition;
 const startButton = document.getElementById('startButton');
         const stopButton = document.getElementById('stopButton');
-
+let interimBuffer = '';
+    let recognition = null;
 
         // Initialize Speech Recognition
-        function initSpeechRecognition() {
-            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = 'en-US';
+function initSpeechRecognition() {
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
 
-            recognition.onresult = function(event) {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        transcript += event.results[i][0].transcript.trim() + '. ';
-                    }
-                }
-                appendTranscript(transcript);
-            };
+  recognition.onresult = function(event) {
+    let finalChunk = '';
+
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalChunk += event.results[i][0].transcript.trim() + '. ';
+        interimBuffer = '';          // clear buffer on final
+      } else {
+        interimBuffer = event.results[i][0].transcript; // FIX 1: track interim
+      }
+    }
+
+    if (finalChunk) appendTranscript(finalChunk);
+  };
 
             recognition.onerror = function(event) {
                 console.error('Speech recognition error detected: ' + event.error);
