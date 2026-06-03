@@ -401,18 +401,11 @@ function initSpeechRecognition() {
                 console.error('Speech recognition error detected: ' + event.error);
             };
 
+    /*
 recognition.onend = function() {
-    
-        setTimeout(() => {
-            try {
-                recognition.start();
-            } catch (e) {
-                console.warn('Restart failed:', e);
-            }
-        }, 300);
-    
+                    recognition.start();
 };
-
+*/
             recognition.start();
 
         // Event listeners for mouse press and release
