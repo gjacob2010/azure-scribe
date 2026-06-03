@@ -401,10 +401,17 @@ function initSpeechRecognition() {
                 console.error('Speech recognition error detected: ' + event.error);
             };
 
-            recognition.onend = function() {
-                // Restart recognition after it ends
+recognition.onend = function() {
+    
+        setTimeout(() => {
+            try {
                 recognition.start();
-            };
+            } catch (e) {
+                console.warn('Restart failed:', e);
+            }
+        }, 300);
+    
+};
 
             recognition.start();
 
