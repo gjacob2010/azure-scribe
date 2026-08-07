@@ -387,14 +387,22 @@ function initSpeechRecognition() {
 
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
-        finalChunk += event.results[i][0].transcript.trim() + '. ';
+        // FIX: Chrome/Edge can fire a "final" result with an empty or
+        // whitespace-only transcript during silence. Only add it to the
+        // chunk if there's actually text there, so silence doesn't
+        // produce blank lines.
+        const text = event.results[i][0].transcript.trim();
+        if (text.length > 0) {
+          finalChunk += text + '. ';
+        }
         interimBuffer = '';          // clear buffer on final
       } else {
         interimBuffer = event.results[i][0].transcript; // FIX 1: track interim
       }
     }
 
-    if (finalChunk) appendTranscript(finalChunk);
+    // FIX: only append if the accumulated chunk has real content
+    if (finalChunk.trim().length > 0) appendTranscript(finalChunk);
   };
 
             recognition.onerror = function(event) {
@@ -438,9 +446,11 @@ recognition.onend = function() {
 
         // Append the transcript to the div with speaker prefix
         function appendTranscript(transcript) {
-                if (transcript.length == 0) {
-                    exit();
-                }
+            // FIX: guard against empty/whitespace-only text instead of
+            // calling the undefined exit() function (which would throw).
+            if (transcript.trim().length === 0) {
+                return;
+            }
             const speaker = isDoctorSpeaking ? 'Speaker: ' : 'Speaker: ';
             transcriptionDiv.innerHTML += `<p><strong>${speaker}</strong>${transcript}</p>`;
         }
