@@ -17,7 +17,7 @@
     <textarea id="transcriptionCopy" rows = "10" cols = "50"></textarea>
 <input id="ipAddress" value="192.168.1.195">Type IP address of server</input>
 <button id="startButton">Start</button>
-    <button id="stopButton" onclick = "initSpeechRecognition()">Stop</button>
+    <button id="stopButton">Stop</button>
 <button onclick = "location.reload()">Restart</button>
  <button onclick="askOllamaSOAP()">Follow up  note SOAP</button>    
  <button onclick="askOllamaSubj()">New consult Subjective</button>
@@ -452,15 +452,20 @@ recognition.onend = function() {
                 return;
             }
             const speaker = isDoctorSpeaking ? 'Speaker: ' : 'Speaker: ';
-            transcriptionDiv.innerHTML += `<p><strong>${speaker}</strong>${transcript}</p>`;
+            // FIX: appendChild instead of innerHTML +=. innerHTML += forces
+            // the browser to re-parse and rebuild the ENTIRE transcript as
+            // HTML on every single chunk, which gets slower the longer the
+            // transcript grows. appendChild only adds the new piece, so
+            // performance stays flat no matter how long the session runs.
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = speaker;
+            p.appendChild(strong);
+            p.appendChild(document.createTextNode(transcript));
+            transcriptionDiv.appendChild(p);
         }
 
         // Start speech recognition
-        initSpeechRecognition();
-    </script>
-
-
-    <script>
         initSpeechRecognition();
     </script>
 
